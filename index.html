@@ -12,14 +12,20 @@ body{
     margin:0;
     font-family:'Cairo', sans-serif;
     direction:rtl;
-    overflow:hidden;
     background: linear-gradient(135deg,#FFE8D6,#CDEAC0,#B5EAD7);
+
     display:flex;
     justify-content:center;
-    align-items:center;
-    height:100vh;
-    position:relative;
+    align-items:center;      /* خليها بالنص */
+    
+    min-height:100vh;        /* مهم */
+    overflow-x:hidden;       /* بس منع سكرول عرضي */
+    
+    padding:20px;
+    box-sizing:border-box;
 }
+
+
 
 /* ✨ نجوم بالخلفية */
 .star{
