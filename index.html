@@ -112,6 +112,30 @@ button:hover{
     margin:5px 0;
     font-size:16px;
 }
+.insta-section{
+    margin-top:20px;
+    text-align:center;
+}
+
+.insta-btn{
+    display:inline-block;
+    margin-top:10px;
+    padding:10px 22px;
+    background: linear-gradient(45deg,#833AB4,#E1306C,#F77737);
+    color:white;
+    text-decoration:none;
+    border-radius:20px;
+    font-size:15px;
+    transition:0.3s;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+.insta-btn:hover{
+    transform:scale(1.08);
+    opacity:0.9;
+}
+
+
 </style>
 </head>
 
@@ -152,6 +176,11 @@ const questions = [
 
   { q:"ما اسم والد النبي ﷺ؟",
     a:["عبد الله بن عبد المطلب","أبو طالب","عمر بن الخطاب"],
+    correct:0
+  },
+
+  { q:"كم عدد سور القرآن الكريم؟",
+    a:["114 سورة","110 سورة","120 سورة"],
     correct:0
   },
 
@@ -205,6 +234,7 @@ const questions = [
     correct:0
   }
 ];
+
 
 
 
@@ -319,16 +349,30 @@ function showCertificate(){
     card.innerHTML=`
         <h1>✨ نتيجتك ${score} / ${questions.length}</h1>
         <div class="result-stars">${stars}</div>
+
         <div class="certificate">
             <h2>🏅 شهادة بطل رمضان 🏅</h2>
             <p>تُمنح هذه الشهادة إلى: <strong>${playerName}</strong></p>
             <p>لحصوله على نتيجة ${score} من ${questions.length}</p>
             <p>في تحدي بطل رمضان 🌙</p>
+            <p>${message}</p>
             <p>من مفكرة نفحات ✨</p>
         </div>
+
         <button onclick="location.reload()">إعادة اللعب</button>
+
+        <div class="insta-section">
+            <p>تابعونا على إنستغرام 🌿</p>
+            <a href="https://www.instagram.com/al_rahman_25?igsh=YWNmeXJ5dnJ3ZGx1" 
+               target="_blank" 
+               class="insta-btn">
+               زيارة الصفحة
+            </a>
+        </div>
     `;
 }
+
+
 </script>
 
 </body>
