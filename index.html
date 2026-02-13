@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌙 تحدي بطل رمضان</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:'Cairo', sans-serif;
+    direction:rtl;
+    overflow:hidden;
+    background: linear-gradient(135deg,#FFE8D6,#CDEAC0,#B5EAD7);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    position:relative;
+}
+
+/* ✨ نجوم بالخلفية */
+.star{
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:white;
+    border-radius:50%;
+    animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle{
+    from{opacity:0.2;}
+    to{opacity:1;}
+}
+
+.card{
+    background:white;
+    width:90%;
+    max-width:500px;
+    padding:30px;
+    border-radius:25px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+    text-align:center;
+    z-index:2;
+    position:relative;
+}
+
+h1{ color:#2A9D8F; margin-bottom:10px; }
+
+#timer{
+    color:#E76F51;
+    margin-bottom:10px;
+}
+
+.progress-bar{
+    height:10px;
+    background:#eee;
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:20px;
+}
+
+.progress{
+    height:100%;
+    width:100%;
+    background:linear-gradient(to right,#F4A261,#E76F51);
+    transition:1s linear;
+}
+
+button{
+    display:block;
+    width:100%;
+    margin:10px 0;
+    padding:12px;
+    border:none;
+    border-radius:15px;
+    font-size:16px;
+    cursor:pointer;
+    background:#F4A261;
+    color:white;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#E76F51;
+    transform:scale(1.05);
+}
+
+.result-stars{
+    font-size:30px;
+    margin:10px 0;
+}
+
+/* 🏆 كارد الشهادة */
+.certificate{
+    background: linear-gradient(145deg,#FFE8D6,#F4A261);
+    padding:20px;
+    border-radius:25px;
+    margin-top:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.certificate h2{
+    color:#2A9D8F;
+    margin-bottom:10px;
+}
+
+.certificate p{
+    margin:5px 0;
+    font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card">
+    <h1>🌙 تحدي بطل رمضان</h1>
+    <p>من مفكرة نفحات ✨</p>
+    <input type="text" id="playerName" placeholder="اكتب اسمك هنا" style="padding:10px; width:80%; border-radius:10px; border:1px solid #ccc; margin-bottom:15px; font-size:16px; text-align:center;">
+    <button onclick="startGame()">ابدأ اللعب</button>
+</div>
+
+<script>
+/* ✨ توليد نجوم بالخلفية */
+for(let i=0;i<40;i++){
+  let star=document.createElement("div");
+  star.className="star";
+  star.style.top=Math.random()*100+"%";
+  star.style.left=Math.random()*100+"%";
+  star.style.animationDuration=(1+Math.random()*3)+"s";
+  document.body.appendChild(star);
+}
+
+const questions = [
+{ q:"في أي شهر نزل القرآن؟", a:["رمضان","شعبان","شوال"], correct:0 },
+{ q:"من هو النبي الذي نزل عليه القرآن؟", a:["سيدنا موسى","سيدنا محمد ﷺ","سيدنا عيسى"], correct:1 },
+{ q:"كم مرة نصلي في اليوم؟", a:["3","5","10"], correct:1 },
+{ q:"ماذا يحدث عند غروب الشمس في رمضان؟", a:["نصلي العشاء","نفطر","ننام"], correct:1 },
+{ q:"ما اسم الصلاة الخاصة برمضان في الليل؟", a:["الجمعة","التراويح","الاستسقاء"], correct:1 },
+{ q:"ماذا نعطي الفقراء في رمضان؟", a:["زكاة الفطر","هدية","لعبة"], correct:0 },
+{ q:"ليلة القدر خير من…", a:["مئة يوم","ألف شهر","سنة"], correct:1 }
+];
+
+let current=0;
+let score=0;
+let time=12;
+let timer;
+let playerName="";
+
+/* --- بداية اللعبة بعد إدخال الاسم --- */
+function startGame(){
+    const nameInput=document.getElementById("playerName").value.trim();
+    playerName = nameInput? nameInput : "الطفل";
+    
+    const card=document.getElementById("card");
+    card.innerHTML = `
+        <h1>🌙 تحدي بطل رمضان</h1>
+        <p>من مفكرة نفحات ✨</p>
+        <div id="timer">الوقت: 12</div>
+        <div class="progress-bar"><div class="progress" id="progress"></div></div>
+        <h2 id="question"></h2>
+        <div id="answers"></div>
+    `;
+    current=0;
+    score=0;
+    loadQuestion();
+}
+
+/* --- تحميل السؤال --- */
+function loadQuestion(){
+    time=12;
+    document.getElementById("timer").innerText="الوقت: "+time;
+    document.getElementById("progress").style.width="100%";
+
+    const q=questions[current];
+    document.getElementById("question").innerText=q.q;
+
+    const answersDiv=document.getElementById("answers");
+    answersDiv.innerHTML="";
+
+    q.a.forEach((answer,index)=>{
+        const btn=document.createElement("button");
+        btn.innerText=answer;
+        btn.onclick=()=>checkAnswer(index);
+        answersDiv.appendChild(btn);
+    });
+
+    timer=setInterval(()=>{
+        time--;
+        document.getElementById("timer").innerText="الوقت: "+time;
+        document.getElementById("progress").style.width=(time/12)*100+"%";
+        if(time===0){
+            clearInterval(timer);
+            highlightAnswer();
+            setTimeout(nextQuestion,1000);
+        }
+    },1000);
+}
+
+/* --- التحقق من الإجابة --- */
+function checkAnswer(index){
+    clearInterval(timer);
+    if(index===questions[current].correct){
+        score++;
+    }
+    highlightAnswer(index);
+    setTimeout(nextQuestion,1000);
+}
+
+/* --- تمييز الإجابات --- */
+/* --- تمييز الإجابات --- */
+function highlightAnswer(selectedIndex){
+    const buttons = document.getElementById("answers").children;
+    for(let i=0;i<buttons.length;i++){
+        if(i===questions[current].correct){
+            buttons[i].style.background="#6FCF97"; // أخضر هادئ
+        }else{
+            buttons[i].style.background="#F18F8B"; // أحمر هادئ
+        }
+        buttons[i].disabled=true; // منع الضغط بعد الاختيار
+    }
+}
+
+
+/* --- الانتقال للسؤال التالي --- */
+function nextQuestion(){
+    current++;
+    if(current<questions.length){
+        loadQuestion();
+    }else{
+        showCertificate();
+    }
+}
+
+/* --- عرض الشهادة بعد انتهاء اللعبة --- */
+function showCertificate(){
+    let message="", stars="";
+    if(score<=3){
+        message="😊 مبتدئ رمضان";
+        stars="⭐";
+    }
+    else if(score<=5){
+        message="🌟 صائم شاطر";
+        stars="⭐⭐";
+    }
+    else{
+        message="👑 بطل رمضان!";
+        stars="⭐⭐⭐";
+    }
+
+    const card=document.getElementById("card");
+    card.innerHTML=`
+        <h1>✨ نتيجتك ${score} / ${questions.length}</h1>
+        <div class="result-stars">${stars}</div>
+        <div class="certificate">
+            <h2>🏅 شهادة بطل رمضان 🏅</h2>
+            <p>تُمنح هذه الشهادة إلى: <strong>${playerName}</strong></p>
+            <p>لحصوله على نتيجة ${score} من ${questions.length}</p>
+            <p>في تحدي بطل رمضان 🌙</p>
+            <p>من مفكرة نفحات ✨</p>
+        </div>
+        <button onclick="location.reload()">إعادة اللعب</button>
+    `;
+}
+</script>
+
+</body>
+</html>
